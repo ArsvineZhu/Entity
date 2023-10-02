@@ -32,15 +32,15 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 import pygame
 
 # import events, strings
-from .events import *
+from Entity.events import *
 
-from .path import Path
-from .utility import Utility
-from .render import Render
-from .crashhandler import CrashHandler
-from .settings import Settings
-from .default.default import default_pages
-from .strings import *
+from Entity.path import Path
+from Entity.utility import Utility
+from Entity.render import Render
+from Entity.crashhandler import CrashHandler
+from Entity.settings import Settings
+from Entity.default.default import default_pages
+from Entity.strings import *
 
 
 class Entity:

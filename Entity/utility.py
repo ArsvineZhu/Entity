@@ -114,3 +114,18 @@ class Utility:
             Zoom to some extent"""
 
             return pygame.transform.rotozoom(sur, 0, float(size))
+
+    class Position:
+        """位置坐标变换"""
+
+        @staticmethod
+        def smooth(value: int | float, target: int | float, speed: int | float = 0.1) -> float:
+            """帧循环 先快后慢
+            render循环内使用方法:
+            v = smooth(v, 100, 0.15)
+            """
+
+            if abs(value - target) <= 1e-6:
+                # 在精度足够高时直接设置为目标值, 减少计算复杂度
+                return float(target)
+            return float(value + (target - value) * speed)

@@ -6,7 +6,7 @@ Exception crash handling class
 
 import sys
 
-from .strings import *
+from Entity.strings import *
 
 
 class CrashHandler:

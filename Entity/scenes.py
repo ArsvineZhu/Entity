@@ -4,7 +4,7 @@
 场景构建类
 """
 
-from .path import Path
+from Entity.path import Path
 
 
 class Scene:

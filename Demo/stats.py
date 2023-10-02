@@ -6,6 +6,12 @@ stats
 统计数据
 """
 
+# 资源文件目录访问
+import os
+
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
+from pygame import image
+
 
 class Stats:
     """统计数据"""
@@ -20,4 +26,6 @@ class Stats:
         # 颜色
         self.color = (0, 0, 0)
 
-        self.assets_path = "C:\\Users\\Administrator\\Pictures\\Camera Roll\\texas\\"
+        self.assets_path = os.path.dirname(__file__) + "$assets$".replace('$', os.path.sep)
+        self.icon = image.load(self.assets_path + "favicon.ico")
+        self.icon.set_colorkey((0, 0, 0))  # 黑色透明

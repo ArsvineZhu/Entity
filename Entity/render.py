@@ -6,9 +6,9 @@ Renderer class
 
 import collections as col
 
-from .scenes import Scene
-from .default.default import default_paths
-from .strings import *
+from Entity.default.default import default_paths
+from Entity.scenes import Scene
+from Entity.strings import *
 
 LANGUAGE = RENDER['zh']
 

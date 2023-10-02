@@ -3,8 +3,8 @@
 
 import sys
 
-from TexasTheOmertosa import Texas
 from Entity import entity
+from TexasTheOmertosa import Texas
 from stats import Stats
 
 
@@ -13,10 +13,11 @@ def main():
     s = Stats()
     size = s.size
     color = s.color
+    icon = s.icon
 
     e = entity.Entity()
-    e.s.config(size, "Texas The Omertosa", color, 30, None)
-    e.s.set_language('en')
+    e.s.config(size, "Texas The Omertosa", color, 45, icon)
+    # e.s.set_language('en')
     e.init()
 
     e.r.sm.register(Texas)

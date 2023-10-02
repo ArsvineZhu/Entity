@@ -6,7 +6,7 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 from pygame.surface import Surface
 import pygame
 
-from .strings import *
+from Entity.strings import *
 
 
 class Settings:
@@ -38,7 +38,7 @@ class Settings:
         """帧率
         FPS"""
 
-        self.FPS = None
+        self.FPS: pygame.time.Clock | None = None
         """设置帧率限制
         Set the frame rate limit"""
 
@@ -89,6 +89,8 @@ class Settings:
         self.screen = pygame.display.set_mode(self.size)
         # 设置窗口的标题，即名称
         pygame.display.set_caption(self.title)
+        if self.icon:  # 设置图标
+            pygame.display.set_icon(self.icon)
         # 设置帧率限制
         self.FPS = pygame.time.Clock()
 

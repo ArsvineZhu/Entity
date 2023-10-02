@@ -6,9 +6,10 @@ os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 import pygame
 from typing import Literal, Callable, Sequence
 
-from .utility import Utility
+from Entity.utility import Utility
 # from .entity import Entity
-from .events import *
+from Entity.events import *
+
 # from .strings import *
 
 # 文本描边用
@@ -29,8 +30,8 @@ class Text:
                  ) -> None:
 
         self.sur = None
-        self.font_obj = None
-        self.rect = None
+        self.font_obj: pygame.font.Font | None = None
+        self.rect: Rect | None = None
 
         self.e = entity
 
@@ -67,6 +68,20 @@ class Text:
         points += [(x, -y) for x, y in points if y]
         points.sort()
         return points
+
+    def set_offset(self, x: int | float = 0, y: int | float = 0) -> None:
+        """设置偏移"""
+
+        self.rect.x = x + self.pos[0]
+        self.rect.y = y + self.pos[1]
+
+    def set_italic(self, value: bool = True):
+        """设定斜体"""
+        self.font_obj.set_italic(value)
+
+    def set_bold(self, value: bool = True):
+        """设定粗体"""
+        self.font_obj.set_bold(value)
 
     def render_bold(self, ocolor=(0, 0, 0), opx=2):
         """渲染一个描边后的文本
@@ -178,6 +193,18 @@ class Rect:
         )
 
 
+class BasicBackground:
+    """基本的背景"""
+
+    @staticmethod
+    def render(entity) -> None:
+        pygame.draw.rect(
+            entity.s.screen,
+            entity.u.colors['grey'],
+            (0, 0, *entity.s.size),
+        )
+
+
 class Image:
     """
     渲染一张图片
@@ -203,6 +230,8 @@ class Image:
         self.x = x
         self.y = y
 
+        self.alpha = 255
+
         # 预处理图片文件
         self.img = pygame.image.load(path)  # mode = 0 or other
         if self.mode == 1:
@@ -211,6 +240,9 @@ class Image:
             self.img = self.img.convert_alpha()
 
         self.size = self.img.get_size()
+
+        self.cx = 0
+        self.cy = 0
 
     def zoom(self, size: int | float) -> None:
         """缩放
@@ -234,12 +266,35 @@ class Image:
         """设定指定颜色透明
         Set the specified color alpha = 0"""
 
+        self.alpha = alpha
         self.img.set_alpha(alpha)
+
+    @staticmethod
+    def _fill(surface: pygame.Surface, color: tuple[int, int, int, int]):
+        """Fill all pixels of the surface with color, preserve transparency."""
+
+        w, h = surface.get_size()
+        r, g, b, _ = color
+        for x in range(w):
+            for y in range(h):
+                a = surface.get_at((x, y))[3]
+                surface.set_at((x, y), pygame.Color(r, g, b, a))
+
+    def set_color(self, color: tuple[int, int, int] | tuple[int, int, int, int]) -> None:
+        """设置颜色"""
+        if len(color) == 3:
+            color = (*color, 0)
+        # 创建一个新的图像，并设置新的颜色
+        new_image = self.img.copy()
+        self._fill(new_image, color)  # 这里我们将新图像设置为color
+        # 合并新的颜色和原图像
+        self.img.blit(new_image, (0, 0))
 
     def render(self, entity) -> None:
         """渲染图片至屏幕
         Render image to the screen"""
-        entity.s.screen.blit(self.img, (self.x, self.y))
+        if self.alpha >= 1:  # 透明不渲染
+            entity.s.screen.blit(self.img, (self.x + self.cx, self.y + self.cy))
 
 
 class Button:
