@@ -333,7 +333,7 @@ class Button:
 
         self.event_type = BUTTON_CLICK
         self.status = status
-        self.response = None
+        self.response: Callable | None = None
 
     def render(self, entity) -> None:
         """渲染至屏幕
@@ -350,7 +350,11 @@ class Button:
 
     def handle_event(self, event: int):
         """处理事件"""
-        if event == BUTTON_CLICK:
+        if event == self.event_type:
             self.status = not self.status
-        if self.response:
-            self.response(self.status)
+        if self.response:  # 如果有反应方法
+            # 如需参数,传入自身
+            if self.response.__annotations__ == {}:
+                self.response()
+            else:
+                self.response(self)

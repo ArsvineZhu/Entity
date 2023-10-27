@@ -24,23 +24,22 @@ to create fully functional games and multimedia programming languages
 in Python in a simpler way.
 """
 
+from Entity.strings import *
+from Entity.default.default import default_pages
+from Entity.settings import Settings
+from Entity.crashhandler import CrashHandler
+from Entity.render import Render
+from Entity.utility import Utility
+from Entity.path import Path
+from Entity.events import *
+import pygame
 import os
 from typing import Callable
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
 
-import pygame
 
 # import events, strings
-from Entity.events import *
-
-from Entity.path import Path
-from Entity.utility import Utility
-from Entity.render import Render
-from Entity.crashhandler import CrashHandler
-from Entity.settings import Settings
-from Entity.default.default import default_pages
-from Entity.strings import *
 
 
 class Entity:
@@ -88,10 +87,11 @@ class Entity:
         }
         """注册事件"""
 
-    def register_event(self, _type: int, listener):
+    def register_event(self, listener: Callable):
         """注册一个事件"""
-        # TODO 未完成
-        self.event_registered[_type].append(listener)
+        # listener 是个页面元素, listener.event_type 是其事件类型
+        # TODO 完善事件系统
+        self.event_registered[listener.event_type].append(listener)
 
     def init(self) -> None:
         """初始化实体界面
@@ -157,10 +157,17 @@ class Entity:
                 self.c.status.code(0, 'Exit')
                 self.c.status.display()
 
+            if event.type == pygame.VIDEORESIZE:
+                # 窗口大小改变
+                self.s.size = (event.size[0], event.size[0] / self.s.original_scale)
+                self.s.screen = pygame.display.set_mode(self.s.size, pygame.RESIZABLE)
+
+                # 卸载已加载的场景, 并重新计算布局
+                self.r.sm.reload_all()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # 鼠标按下
                 for listener in self.event_registered[BUTTON_CLICK]:
                     # 处理按钮按下
-                    if listener.event_type == BUTTON_CLICK and listener.__collide__.collidepoint(
-                            pygame.mouse.get_pos()):
+                    if listener.__collide__.collidepoint(pygame.mouse.get_pos()):
                         listener.handle_event(BUTTON_CLICK)

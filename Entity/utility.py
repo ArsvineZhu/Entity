@@ -63,6 +63,10 @@ class Utility:
         Hundred percent relative y position"""
         return float((hp / 100.0) * self.entity.s.size[1])
 
+    def zoomrate(self, size: int | float = 1) -> float:
+        """自适应缩放率"""
+        return float(self.entity.s.size[0] / self.entity.s.original_size[0] * size)
+
     @staticmethod
     def diaphaneity(v: int | float) -> int:
         """百分比透明度换算至255不透明度"""

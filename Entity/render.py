@@ -90,6 +90,20 @@ class Render:
             for scene in scenes:
                 self.load(scene)
 
+        def reload(self, scene: type[Scene]) -> None:
+            """重新加载场景
+            Reload a scene"""
+
+            self.r.loaded[str(scene())].prepare(self.r.entity)
+
+        def reload_all(self) -> None:
+            """同时重新加载所有场景
+            Reload all scenes at the same time"""
+
+            loaded = list(self.r.loaded.values())
+            for i in range(len(loaded)):
+                self.reload(type(loaded[i]))
+
         def unload(self, scene: type[Scene]) -> None:
             """卸载场景
             Unload a scene"""

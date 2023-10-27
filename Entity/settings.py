@@ -1,12 +1,11 @@
 #! python3.11
 
+from Entity.strings import *
+import pygame
+from pygame.surface import Surface
 import os
 
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
-from pygame.surface import Surface
-import pygame
-
-from Entity.strings import *
 
 
 class Settings:
@@ -21,6 +20,8 @@ class Settings:
         self.size: tuple[int, int] = (1080, 720)
         """窗口大小
         Window size"""
+        self.original_size = self.size
+        self.original_scale = self.size[0] / self.size[1]
 
         self.title = "Utility Entity Default"
         """窗口标题
@@ -46,6 +47,9 @@ class Settings:
         """Pygame 的主窗口
         The main window of Pygame"""
 
+        self.resizable = False
+        """窗口大小是否可调整, 长度优先, 等比缩放"""
+
         self.fontdefault = None
         """默认字体, 设定后, 默认将使用系列内的字体渲染那些未传入字体的文本渲染
         Default font, when set, by default,
@@ -58,16 +62,20 @@ class Settings:
                title: str,
                color: tuple,
                fps: int = 30,
-               icon=None
+               resizable: bool = False,
+               icon: Surface | None = None
                ):
         """设定窗口基本数据
         Set the basic data of the window"""
 
         self.size = size
+        self.original_size = self.size
+        self.original_scale = self.size[0] / self.size[1]
         self.title = title
         self.icon = icon
         self.color = color
         self.fps = fps
+        self.resizable = resizable
 
     def set_language(self, lang: str = 'zh') -> None:
         """设定异常输出的语言
@@ -85,8 +93,12 @@ class Settings:
 
         # 使用 pygame 之前必须初始化
         pygame.init()
+
         # 设置主屏窗口
         self.screen = pygame.display.set_mode(self.size)
+        if self.resizable:
+            self.screen = pygame.display.set_mode(self.size, pygame.RESIZABLE)
+
         # 设置窗口的标题，即名称
         pygame.display.set_caption(self.title)
         if self.icon:  # 设置图标
